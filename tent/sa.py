@@ -46,30 +46,31 @@ class sa:
         pass
 
     def neighbour_operator(self):
+        new_state = self.state.copy()
         print('after neighbour operator')
         n = randint(0, self.no_of_tree - 1)
        
         l =  list(self.map_tree_tent.keys())
         tree_pos = l[n]
         tent_pos = self.map_tree_tent[tree_pos]
-        self.state[tent_pos[0]][tent_pos[1]] = 0
+        new_state[tent_pos[0]][tent_pos[1]] = 0
 
         print(tree_pos)
-        print(self.state)
+        print(new_state)
         
         cells_around_tree = []
         i, j = tree_pos
         if i - 1 >= 0:
-            if check_adjecent_cells([i-1, j],self.state):
+            if check_adjecent_cells([i-1, j],new_state):
                 cells_around_tree.append([i-1, j])
         if i + 1 < n:
-            if check_adjecent_cells([i+1, j],self.state):
+            if check_adjecent_cells([i+1, j],new_state):
                 cells_around_tree.append([i+1, j])
         if j - 1 >= 0:
-            if check_adjecent_cells([i, j-1],self.state):
+            if check_adjecent_cells([i, j-1],new_state):
                 cells_around_tree.append([i, j-1])
         if j + 1 < n:
-            if check_adjecent_cells([i, j+1],self.state):
+            if check_adjecent_cells([i, j+1],new_state):
                 cells_around_tree.append([i, j+1])    
         
         if len(cells_around_tree) <= 0: return
@@ -77,12 +78,19 @@ class sa:
         new_tent_pos = cells_around_tree[n]
         print(new_tent_pos)
         i, j = new_tent_pos
-        self.state[i][j] = 2
-        print(self.state)
+        new_state[i][j] = 2
+        print(new_state)
+        return new_state
 
     def run(self):
         self.init_state()
         self.neighbour_operator()
+
+    def solve(self):
+        while eval(self.state, self) > 0:
+            decreaseFactor = 0.99
+            stuckCount = 0
+            nextState = self.neighbour_operator()
 
 
 
