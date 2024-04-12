@@ -1,4 +1,5 @@
 import numpy as np
+from tent_game.game import *
 # none = 0
 # tree = 1
 # tent = 2
@@ -89,7 +90,7 @@ def find_tree(board, dict):
             if board[i][j] == 1 and ((i,j) not in dict): return i,j
     return None
 
-def bfs(board, row_clue, col_clue, tent, stack):
+def bfs(board, row_clue, col_clue, tent, stack,statelist):
     # check stop condition
     if is_solution(board, row_clue, col_clue): 
         # print('found solution')
@@ -107,13 +108,12 @@ def bfs(board, row_clue, col_clue, tent, stack):
         for pos in find:
             #check that position has adjecent tent or not
             if check_valid(pos, board, row_clue, col_clue):
-                
                 board[pos[0]][pos[1]] = 2
-
-                if bfs(board, row_clue, col_clue, tent,  stack):
+                statelist.append((pos[0],pos[1],2))
+                if bfs(board, row_clue, col_clue, tent,  stack,statelist):
                     return True
             
                 board[pos[0]][pos[1]] = 0
+                statelist.append((pos[0],pos[1],0))
                 stack.pop(-1)
-        
     return False
