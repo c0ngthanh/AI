@@ -2,14 +2,14 @@ import time
 import pygame, sys, random
 from pygame.locals import *
 from enum import Enum
-from tent_game.helper import *
-from tent_game.cfg import * 
+from game.helper import *
+from game.cfg import * 
 
 
 class Game():
     def __init__(self,baseGrid,row_clue,col_clue):
-        self.tree_img = pygame.transform.scale(pygame.image.load("tent_game/Assets/tree.jpg"),(WIDTH,HEIGHT))
-        self.tent_img = pygame.transform.scale(pygame.image.load("tent_game/Assets/tent.jpg"),(WIDTH,HEIGHT))
+        self.tree_img = pygame.transform.scale(pygame.image.load("game/Assets/tree.jpg"),(WIDTH,HEIGHT))
+        self.tent_img = pygame.transform.scale(pygame.image.load("game/Assets/tent.jpg"),(WIDTH,HEIGHT))
 
         # BACKGROUND = pygame.image.load('tent_game/Assets/bg.png')
         # BACKGROUND = pygame.transform.scale(BACKGROUND, (WINDOWWIDTH, WINDOWHEIGHT))

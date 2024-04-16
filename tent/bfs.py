@@ -1,5 +1,5 @@
 import numpy as np
-from tent_game.game import *
+from game.game import *
 # none = 0
 # tree = 1
 # tent = 2
