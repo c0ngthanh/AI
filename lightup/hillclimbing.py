@@ -3,6 +3,7 @@ import copy
 import random
 
 from lightup.utils import *
+from lightup.backtracking import backtracking_upgrade
 
 def check_bulb_conflict(matrix):
     # check rows
@@ -117,10 +118,11 @@ def hill_climbing(matrix, puzzle):
 
     return results[0]
 
-def solve_puzzle2(matrix, puzzle):
+def find_local_optimal(matrix, puzzle):
+    copy_matrix = copy.deepcopy(matrix)
+
     terminate = False
     number_eval = 0
-    copy_matrix = copy.deepcopy(matrix)
     non_fitness_improvement = 0
 
     local_optimal = copy_matrix
@@ -135,6 +137,7 @@ def solve_puzzle2(matrix, puzzle):
             terminate = True
 
         if caculate_fitness(copy_matrix, puzzle) == 100:
+
             terminate = True
 
         if local_optimal_fitness < new_fitness :
@@ -145,3 +148,20 @@ def solve_puzzle2(matrix, puzzle):
             non_fitness_improvement += 1
 
     return local_optimal
+
+def solve_puzzle2(matrix, puzzle):
+    n = len(matrix)
+    ans = []
+    backtracking_upgrade(puzzle, matrix, n, 0, ans)
+    ans = ans[0::2] #REALLY IMPORTANT!!!
+    solutions = []
+    for i in ans:
+        a = find_local_optimal(i, puzzle)
+        # print(a)
+        solutions.append(a)
+        # print('----------')
+        # print(solutions)
+
+    
+    sorted(solutions, key = lambda x: caculate_fitness(x, puzzle), reverse=False)
+    return solutions[-1]

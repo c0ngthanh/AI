@@ -1,6 +1,5 @@
 from lightup.backtracking import *
 from lightup.hillclimbing import *
-from game.lightupgame import *
 # puzzle = {
 #     (0,1): 0,
 #     (1,6): 3,
@@ -29,12 +28,10 @@ puzzle = {
 if __name__ == "__main__":
     matrix = init_matrix(puzzle, 7)
 
-    # stack = []
-    # backtracking(puzzle, matrix, 7, stack)
-    # print(matrix)
-
-    # matrix = solve_puzzle2(matrix, puzzle)
-    # print(matrix)
-
-    matrix = solve_puzzle_upgrade(matrix, puzzle, 7)
+    # hill climbing
+    matrix = solve_puzzle2(matrix, puzzle)
     print(matrix)
+
+    # backtracking
+    # matrix = solve_puzzle_upgrade(matrix, puzzle, 7)
+    # print(matrix)
