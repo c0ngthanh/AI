@@ -34,3 +34,7 @@ game.run(statelist)
 # a = sa(x, y, z)
 # a.run()
 
+#Min-Conflict
+a = mc(x, y, z, n)
+a.run()
+
