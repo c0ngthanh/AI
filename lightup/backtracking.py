@@ -17,8 +17,6 @@ append that black cell to stack A
     - if valid, place bulb
     - call back tracking
     remove bulb
-
-
 """
 
 # -2: not illuminated
@@ -117,61 +115,81 @@ def get_all_cell_not_illuminated(matrix):
     return res
 
 
-def solve_puzzle(matrix, puzzle, min_bulb, n):
-    stack = []
-    ans = []
-    backtracking(puzzle, matrix, 7, stack, ans)
-    print('ans')
+# def solve_puzzle(matrix, puzzle, min_bulb, n):
+#     stack = []
+#     ans = []
+#     backtracking(puzzle, matrix, 7, stack, ans)
+#     print('ans')
 
 
-    candidate_list = get_all_cell_not_illuminated(matrix)
-    while True:
-        if is_solution(matrix):
-            return matrix
-        min_bulb += 1
-        if min_bulb > n:
-            print('limit exceed')
-            return []
+#     candidate_list = get_all_cell_not_illuminated(matrix)
+#     while True:
+#         if is_solution(matrix):
+#             return matrix
+#         min_bulb += 1
+#         if min_bulb > n:
+#             print('limit exceed')
+#             return []
         
-        all_combination = combinations(candidate_list, min_bulb)
-        copy_matrix = copy.deepcopy(matrix)
-        for comb in list(all_combination):
-            for pos in comb:
-                if valid(pos, copy_matrix, puzzle):
-                    place_bulb(copy_matrix, pos, puzzle)
-                else:
-                    break
-            if is_solution(copy_matrix): 
-                matrix = copy_matrix
-                break
+#         all_combination = combinations(candidate_list, min_bulb)
+#         copy_matrix = copy.deepcopy(matrix)
+#         for comb in list(all_combination):
+#             for pos in comb:
+#                 if valid(pos, copy_matrix, puzzle):
+#                     place_bulb(copy_matrix, pos, puzzle)
+#                 else:
+#                     break
+#             if is_solution(copy_matrix): 
+#                 matrix = copy_matrix
+#                 break
 
 def solve_puzzle_upgrade(matrix, puzzle, n):
     # if puzzle has local mins then the previus solve_puzzle function will not work
     ans = []
     backtracking_upgrade(puzzle, matrix, n, 0, ans)
-    ans = ans[0::2] #REALLY IMPORTANT!!!
-
+    ans = np.unique(ans, axis=0) #REALLY IMPORTANT!!!
+    loop = 0
     for a in ans:
+        # print('loop: ', loop)
+        # loop+=1
+        # print(a)
         matrix = a
         candidate_list = get_all_cell_not_illuminated(matrix)
         min_bulb = 0
         while True:
             if is_solution(matrix):
+                print('found solution')
                 return matrix
             min_bulb += 1
             if min_bulb > n:
-                print('limit exceed')
                 break
-            
+            # print('min bulb:', min_bulb)
+            # if min_bulb == 5 and loop == 3: print(len(candidate_list))
             all_combination = combinations(candidate_list, min_bulb)
-            copy_matrix = copy.deepcopy(matrix)
+            # print(copy_matrix)
+            
             for comb in list(all_combination):
+                copy_matrix = copy.deepcopy(matrix)
+                # if( comb == ((0, 2), (0, 4), (1, 5), (3, 4), (5, 1))):
+                #     print(copy_matrix)
+                # print('comb: ')
+                # print(comb)
                 for pos in comb:
+                    # if( comb == ((0, 2), (0, 4), (1, 5), (3, 4), (5, 1))) and pos == (0,2):
+                    #     print('before:')
+                    #     print(copy_matrix)
                     if valid(pos, copy_matrix, puzzle):
+                        # if( comb == ((0, 2), (0, 4), (1, 5), (3, 4), (5, 1))) and pos == (0,2):
+                        #     print(copy_matrix)
                         place_bulb(copy_matrix, pos, puzzle)
+                        # print('place bulb at', pos)
+                        # print(copy_matrix)
+                        # if( comb == ((0, 2), (0, 4), (1, 5), (3, 4), (5, 1))):
+                        #     print('place bulb at ', pos)
+                        #     print(copy_matrix)
                     else:
                         break
                 if is_solution(copy_matrix): 
-                    matrix = copy_matrix
                     print('found solution')
-                    break
+                    matrix = copy_matrix
+                    return matrix
