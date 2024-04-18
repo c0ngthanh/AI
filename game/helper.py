@@ -21,7 +21,7 @@ class CellValue(Enum):
 class CellValueLight(Enum):
     NOTILLUMINATED = -2
     ILLUMINATED = -1
-    BLACK = [1,2,3,4,5]
+    BLACKCELL = [0,1,2,3,4,5]
     # BLACK1 = 1
     # BLACK2 = 2
     # BLACK3 = 3
@@ -33,8 +33,8 @@ class CellValueLight(Enum):
             return CellValueLight.NOTILLUMINATED
         if(value == -1):
             return CellValueLight.ILLUMINATED
-        if(value in BLACK):
-            return CellValueLight.BLACK
+        if(value in [0,1,2,3,4,5]):
+            return CellValueLight.BLACKCELL
         # if(value == 1):
         #     return CellValueLight.BLACK1
         # if(value == 2):

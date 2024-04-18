@@ -28,7 +28,9 @@ puzzle = {
 }
 if __name__ == "__main__":
     matrix = init_matrix(puzzle, 7)
-
+    game = LightUpGame(matrix)
+    game.initGrid()
+    game.run()
     # stack = []
     # backtracking(puzzle, matrix, 7, stack)
     # print(matrix)
@@ -36,5 +38,5 @@ if __name__ == "__main__":
     # matrix = solve_puzzle2(matrix, puzzle)
     # print(matrix)
 
-    matrix = solve_puzzle_upgrade(matrix, puzzle, 7)
-    print(matrix)
+    # matrix = solve_puzzle_upgrade(matrix, puzzle, 7)
+    # print(matrix)

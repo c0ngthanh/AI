@@ -11,8 +11,8 @@ WIDTH = 50
 HEIGHT = 50
 # Grid Config
 MARGIN = 2
-rownum = 6
-colnum = 6
+rownum = 7
+colnum = 7
 grid = [[0,1,0,0,1,0],
         [0,0,0,0,0,0],
         [0,1,0,0,1,0],
