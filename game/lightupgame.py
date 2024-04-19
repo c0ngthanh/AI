@@ -79,7 +79,6 @@ class LightUpGame():
             return
         self.game.grid[r][c].value = CellValueLight.BULB
         self.game.grid[r][c].numoflight = self.game.grid[r][c].numoflight + 1
-        print(self.game.grid[r][c].numoflight)
         self.DISPLAYSURF.blit(self.bulb_img,self.game.grid[r][c].position)
         # Update row and column cell
         for i in range(r+1,colnum):
@@ -100,30 +99,33 @@ class LightUpGame():
             self.updateNewBulbGrid(r,i,True)
         pygame.display.update()
     def removeBulb(self,r:int,c:int):
-        if(self.game.grid[r][c].value == CellValueLight.BLACKCELL or self.game.grid[r][c].value == CellValueLight.BULB):
-            print("Can not place bulb")
+        if(self.game.grid[r][c].value != CellValueLight.BULB):
+            print("Can not remove bulb")
             return
-        self.game.grid[r][c].value = CellValueLight.BULB
-        self.game.grid[r][c].numoflight = self.game.grid[r][c].numoflight + 1
-        print(self.game.grid[r][c].numoflight)
-        self.DISPLAYSURF.blit(self.bulb_img,self.game.grid[r][c].position)
+        self.game.grid[r][c].numoflight = self.game.grid[r][c].numoflight - 1
+        if(self.game.grid[r][c].numoflight == 0):
+            self.game.grid[r][c].value = CellValueLight.NOTILLUMINATED
+            self.DISPLAYSURF.blit(self.white_cell,self.game.grid[r][c].position)
+        else:
+            self.game.grid[r][c].value = CellValueLight.ILLUMINATED
+            self.DISPLAYSURF.blit(self.yellow_cell,self.game.grid[r][c].position)
         # Update row and column cell
         for i in range(r+1,colnum):
             if(self.game.grid[i][c].value == CellValueLight.BLACKCELL):
                 break
-            self.updateNewBulbGrid(i,c,True)
+            self.updateNewBulbGrid(i,c,False)
         for i in range(r-1,-1,-1):
             if(self.game.grid[i][c].value == CellValueLight.BLACKCELL):
                 break
-            self.updateNewBulbGrid(i,c,True)
+            self.updateNewBulbGrid(i,c,False)
         for i in range(c+1,rownum):
             if(self.game.grid[r][i].value == CellValueLight.BLACKCELL):
                 break
-            self.updateNewBulbGrid(r,i,True)
+            self.updateNewBulbGrid(r,i,False)
         for i in range(c-1,-1,-1):
             if(self.game.grid[r][i].value == CellValueLight.BLACKCELL):
                 break
-            self.updateNewBulbGrid(r,i,True)
+            self.updateNewBulbGrid(r,i,False)
         pygame.display.update()
     def updateNewBulbGrid(self,r:int,c:int, addBulb:bool):
         if(addBulb):
@@ -139,13 +141,17 @@ class LightUpGame():
             # print(r,c,self.game.grid[r][c].numoflight)
         else:
             if(self.game.grid[r][c].value == CellValueLight.ILLUMINATED):
-                self.game.grid[r][c].numoflight = self.game.grid[r][c].numoflight1-1
+                self.game.grid[r][c].numoflight = self.game.grid[r][c].numoflight-1
                 if(self.game.grid[r][c].numoflight == 0):
                     self.game.grid[r][c].value = CellValueLight.NOTILLUMINATED
                     self.DISPLAYSURF.blit(self.white_cell,self.game.grid[r][c].position)
 
             if(self.game.grid[r][c].value == CellValueLight.BULB):
-                self.DISPLAYSURF.blit(self.bulb_img,self.game.grid[r][c].position)
+                self.game.grid[r][c].numoflight = self.game.grid[r][c].numoflight-1
+                if(self.game.grid[r][c].numoflight == 1):
+                    self.DISPLAYSURF.blit(self.bulb_img,self.game.grid[r][c].position)
+                else:
+                    self.DISPLAYSURF.blit(self.red_bulb_img,self.game.grid[r][c].position)
     def run(self):
         # DISPLAYSURF.blit(BACKGROUND, (0, 0))
         done = False
@@ -173,7 +179,13 @@ class LightUpGame():
                     self.placeBulb(1,2)
                     # self.placeBulb(1,2)
                     # print(statelist)
-            
+                if event.type == pygame.KEYDOWN:
+            # checking if key "A" was pressed
+                    if event.key == pygame.K_a:
+                        self.removeBulb(1,2)
+                    if event.key == pygame.K_d:
+                        self.removeBulb(3,2)
+                # if pygame.key.get_pressed == K_UP:
             # time.sleep(0.001)
             # self.updateCellValue(statelist[0][0],statelist[0][1],statelist[0][2])
             # statelist.pop(0)
