@@ -27,7 +27,9 @@ puzzle = {
 }
 if __name__ == "__main__":
     matrix = init_matrix(puzzle, 7)
-
+    game = LightUpGame(matrix)
+    game.initGrid()
+    game.run()
     # hill climbing
     matrix = solve_puzzle2(matrix, puzzle)
     print(matrix)
