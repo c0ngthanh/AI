@@ -78,57 +78,48 @@ class LightUpGame():
             print("Can not place bulb")
             return
         self.game.grid[r][c].value = CellValueLight.BULB
+        self.game.grid[r][c].numoflight = self.game.grid[r][c].numoflight + 1
+        print(self.game.grid[r][c].numoflight)
         self.DISPLAYSURF.blit(self.bulb_img,self.game.grid[r][c].position)
         # Update row and column cell
         for i in range(r+1,colnum):
             if(self.game.grid[i][c].value == CellValueLight.BLACKCELL):
                 break
-            self.updateNewBulbGrid(i,c)
+            self.updateNewBulbGrid(i,c,True)
         for i in range(r-1,-1,-1):
             if(self.game.grid[i][c].value == CellValueLight.BLACKCELL):
                 break
-            self.updateNewBulbGrid(i,c)
+            self.updateNewBulbGrid(i,c,True)
         for i in range(c+1,rownum):
             if(self.game.grid[r][i].value == CellValueLight.BLACKCELL):
                 break
-            self.updateNewBulbGrid(r,i)
+            self.updateNewBulbGrid(r,i,True)
         for i in range(c-1,-1,-1):
             if(self.game.grid[r][i].value == CellValueLight.BLACKCELL):
                 break
-            self.updateNewBulbGrid(r,i)
+            self.updateNewBulbGrid(r,i,True)
         pygame.display.update()
     def updateNewBulbGrid(self,r:int,c:int, addBulb:bool):
         if(addBulb):
             if(self.game.grid[r][c].value == CellValueLight.NOTILLUMINATED):
+                self.game.grid[r][c].value = CellValueLight.ILLUMINATED
+                self.game.grid[r][c].numoflight = 1
                 self.DISPLAYSURF.blit(self.yellow_cell,self.game.grid[r][c].position)
-            if(self.game.grid[r][c].value == CellValueLight.BULB):
+            elif(self.game.grid[r][c].value == CellValueLight.BULB):
                 self.DISPLAYSURF.blit(self.red_bulb_img,self.game.grid[r][c].position)
+                self.game.grid[r][c].numoflight = self.game.grid[r][c].numoflight + 1
+            elif(self.game.grid[r][c].value == CellValueLight.ILLUMINATED):
+                self.game.grid[r][c].numoflight = self.game.grid[r][c].numoflight + 1
+            # print(r,c,self.game.grid[r][c].numoflight)
         else:
             if(self.game.grid[r][c].value == CellValueLight.ILLUMINATED):
-                if not self.isIlluminatedByOtherBulb(r,c):/
+                self.game.grid[r][c].numoflight = self.game.grid[r][c].numoflight1-1
+                if(self.game.grid[r][c].numoflight == 0):
+                    self.game.grid[r][c].value = CellValueLight.NOTILLUMINATED
                     self.DISPLAYSURF.blit(self.white_cell,self.game.grid[r][c].position)
+
             if(self.game.grid[r][c].value == CellValueLight.BULB):
                 self.DISPLAYSURF.blit(self.bulb_img,self.game.grid[r][c].position)
-    def isIlluminatedByOtherBulb(self,r:int,c:int):
-        # for i in range(r+1,colnum):
-        #     if(self.game.grid[i][c].value == CellValueLight.BLACKCELL):
-        #         break
-        #     if(self.game.grid[i][c].value == CellValueLight.BULB):
-        #         return True
-        # for i in range(r-1,-1,-1):
-        #     if(self.game.grid[i][c].value == CellValueLight.BLACKCELL):
-        #         break
-        #     if(self.game.grid[i][c].value == CellValueLight.BULB):
-        #         return True
-        # for i in range(c+1,rownum):
-        #     if(self.game.grid[r][i].value == CellValueLight.BLACKCELL):
-        #         break
-        #     if(self.game.grid[r][i].value == CellValueLight.BULB):
-        #         return True
-        # for i in range(c-1,-1,-1):
-        #     if(self.game.grid[r][i].value == CellValueLight.BLACKCELL):
-        #         break
-        return False
     def run(self):
         # DISPLAYSURF.blit(BACKGROUND, (0, 0))
         done = False
@@ -154,6 +145,7 @@ class LightUpGame():
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     self.placeBulb(3,2)
                     self.placeBulb(1,2)
+                    # self.placeBulb(1,2)
                     # print(statelist)
             
             # time.sleep(0.001)
