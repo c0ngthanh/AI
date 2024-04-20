@@ -1,5 +1,9 @@
 from lightup.backtracking import *
 from lightup.hillclimbing import *
+from game.lightupgame import *
+from game.lightupgame2 import *
+from lightup import utils
+
 # puzzle = {
 #     (0,1): 0,
 #     (1,6): 3,
@@ -26,14 +30,25 @@ puzzle = {
     (6,4): 1
 }
 if __name__ == "__main__":
+    utils.resetState()
     matrix = init_matrix(puzzle, 7)
-    game = LightUpGame(matrix)
-    game.initGrid()
-    game.run()
+    
     # hill climbing
     matrix = solve_puzzle2(matrix, puzzle)
-    print(matrix)
+    game = LightUpGame2(matrix)
+    game.renderGrid(game.game)
+    game.renderGrid(game.game1)
+    game.renderGrid(game.game2)
+    game.renderGrid(game.game3)
+    # print(utils.stateList)
 
-    # backtracking
-    # matrix = solve_puzzle_upgrade(matrix, puzzle, 7)
     # print(matrix)
+    # stateList.append(matrix)
+    # backtracking
+    # game = LightUpGame(matrix)
+    # game.initGrid()
+    # matrix = solve_puzzle_upgrade(matrix, puzzle, 7)
+    # print(utils.stateList[0])
+    # print(utils.stateList[1])
+    # print(matrix)
+    game.run(utils.stateList)

@@ -7,6 +7,9 @@ import numpy as np
 
 def GetWorldPosition(row:int,col:int):
     return (OFFSET[0]+(MARGIN + WIDTH) * col + MARGIN, OFFSET[1]+(MARGIN + HEIGHT) * row + MARGIN)
+def GetWorldPositionCustom(row:int,col:int,CustomOFFSET: tuple):
+    return (CustomOFFSET[0]+(MARGIN + WIDTH) * col + MARGIN, CustomOFFSET[1]+(MARGIN + HEIGHT) * row + MARGIN)
+
 class CellValue(Enum):
     NOTHING = 0
     TREE = 1
@@ -20,7 +23,7 @@ class CellValue(Enum):
             return CellValue.TENT
 class CellValueLight(Enum):
     NOTILLUMINATED = -2
-    ILLUMINATED = -1
+    ILLUMINATED = [8,9]
     BLACKCELL = [0,1,2,3,4,5]
     # BLACK1 = 1
     # BLACK2 = 2
@@ -31,7 +34,7 @@ class CellValueLight(Enum):
     def int2CellValue(value: int):
         if(value == -2):
             return CellValueLight.NOTILLUMINATED
-        if(value == -1):
+        if(value in [8,9]):
             return CellValueLight.ILLUMINATED
         if(value in [0,1,2,3,4,5]):
             return CellValueLight.BLACKCELL
@@ -77,4 +80,11 @@ class Grid:
             self.grid.append([])
             for c in range(self.col):
                 cell = Cell(CellValueLight.int2CellValue(self.baseGrid[r][c]),r,c,0)
+                self.grid[r].append(cell)
+    def SetUpLightGridCustom(self,offset: tuple):
+        for r in range(self.row):
+            self.grid.append([])
+            for c in range(self.col):
+                cell = Cell(CellValueLight.int2CellValue(self.baseGrid[r][c]),r,c,0)
+                cell.position = GetWorldPositionCustom(r,c,offset)
                 self.grid[r].append(cell)

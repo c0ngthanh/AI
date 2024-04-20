@@ -1,5 +1,10 @@
 import numpy as np
 
+stateList = []
+stateListChild = []
+def resetState():
+    stateList.clear()
+    stateListChild.clear()
 def is_solution(matrix):
     for x in np.nditer(matrix): 
         if x == -2: 
@@ -68,9 +73,9 @@ def get_total_bulb_around(pos, matrix, n):
 
 
 def place_bulb(matrix, position, puzzle):
-
     i, j = position
     n = len(matrix)
+    # stateList.append((i,j,True))
     if (i,j) not in puzzle:
         # place bulb
         matrix[i][j] = 6
@@ -110,6 +115,7 @@ def remove_bulb(matrix, pos, puzzle):
         # print('there is no bulb here')
         return False
     matrix[i][j] = -2
+    # stateList.append((i,j,False))
 
     for k in range(i-1, -1, -1):
     #check if cell[k][j] is black cell

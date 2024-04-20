@@ -110,7 +110,7 @@ def reduce_one_bulb(matrix, puzzle):
 
 def hill_climbing(matrix, puzzle):
     results = [add_one_bulb(matrix, puzzle), reduce_one_bulb(matrix, puzzle)]
-
+    
     sorted(results, key = lambda x: caculate_fitness(x, puzzle), reverse=True)
 
     if caculate_fitness(results[0], puzzle) < caculate_fitness(matrix, puzzle):
@@ -153,7 +153,7 @@ def solve_puzzle2(matrix, puzzle):
     n = len(matrix)
     ans = []
     backtracking_upgrade(puzzle, matrix, n, 0, ans)
-    ans = ans[0::2] #REALLY IMPORTANT!!!
+    ans = np.unique(ans,axis=0) #REALLY IMPORTANT!!!
     solutions = []
     for i in ans:
         a = find_local_optimal(i, puzzle)

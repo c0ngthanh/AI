@@ -48,7 +48,6 @@ def backtracking_upgrade(puzzle, matrix, n, counter, ans):
 
     if l == 5 or l == 0:
         backtracking_upgrade(puzzle, matrix, n, counter+1 , ans)
-
     black_cell_pos = puzzle_keys[counter]
     num, find = get_total_bulb_around(black_cell_pos, matrix, n)
     combination = combinations(find, l-num)  
@@ -60,19 +59,24 @@ def backtracking_upgrade(puzzle, matrix, n, counter, ans):
         for pos in comb: 
             if not valid(pos, matrix, puzzle):
                 flag = False
+                a=copy.deepcopy(matrix)
+                stateList.append(a)
                 break
             else:
                 place_bulb(matrix, pos, puzzle)
+                a=copy.deepcopy(matrix)
+                stateList.append(a)
         if flag:
             res = backtracking_upgrade(puzzle, matrix, n,counter+1 , ans) or res
         
         for pos in comb:
             remove_bulb(matrix, pos, puzzle)
-
+            a=copy.deepcopy(matrix)
+            stateList.append(a)
     return res
 
 
-def backtracking(puzzle, matrix, n, stack, ans):
+# def backtracking(puzzle, matrix, n, stack, ans):
     
     if check_condition(matrix, puzzle, n): 
         ans.append(matrix)
@@ -93,12 +97,15 @@ def backtracking(puzzle, matrix, n, stack, ans):
                 break
             else:
                 place_bulb(matrix, pos, puzzle)
+                # stateList.append(matrix)
         
         if backtracking(puzzle, matrix, n, stack, ans):
             return True
         
         for pos in comb:
             remove_bulb(matrix, pos, puzzle)
+            # stateList.append(matrix)
+
 
         stack.pop(-1)
     
@@ -170,6 +177,8 @@ def solve_puzzle_upgrade(matrix, puzzle, n):
             
             for comb in list(all_combination):
                 copy_matrix = copy.deepcopy(matrix)
+                stateList.append(copy_matrix)
+                # stateList.append(matrix)
                 # if( comb == ((0, 2), (0, 4), (1, 5), (3, 4), (5, 1))):
                 #     print(copy_matrix)
                 # print('comb: ')
@@ -186,7 +195,8 @@ def solve_puzzle_upgrade(matrix, puzzle, n):
                         # print(copy_matrix)
                         # if( comb == ((0, 2), (0, 4), (1, 5), (3, 4), (5, 1))):
                         #     print('place bulb at ', pos)
-                        #     print(copy_matrix)
+                        #     print(copy_matrix)'
+                        stateList.append(copy_matrix)
                     else:
                         break
                 if is_solution(copy_matrix): 

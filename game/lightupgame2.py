@@ -7,7 +7,7 @@ from game.cfg import *
 
 
 
-class LightUpGame():
+class LightUpGame2():
     def __init__(self,baseGrid):
         pygame.init()
         self.FPS = 120
@@ -25,54 +25,44 @@ class LightUpGame():
 
         self.game = Grid(rownum, colnum, Cell,baseGrid)
         self.game.SetUpLightGrid()
+        # child game
+        self.game1 = Grid(rownum, colnum, Cell,baseGrid)
+        self.game1.SetUpLightGridCustom(OFFSET1)
+        self.game2 = Grid(rownum, colnum, Cell,baseGrid)
+        self.game2.SetUpLightGridCustom(OFFSET2)
+        self.game3 = Grid(rownum, colnum, Cell,baseGrid)
+        self.game3.SetUpLightGridCustom(OFFSET3)
         self.font = pygame.font.Font('arial.ttf', 20)
-        # self.row_clue=row_clue
-        # self.col_clue=col_clue
-        # self.renderClue()
-    # def renderClue(self):
-    #     font = pygame.font.Font('arial.ttf', 20)
-    #     for i in range(len(self.row_clue)):
-    #         text = font.render(str(self.row_clue[i]), True,WHITE)
-    #         pos = GetWorldPosition(int(i),-1)
-    #         textRect = pygame.Rect(pos[0],pos[1],WIDTH,HEIGHT)
-    #         self.DISPLAYSURF.blit(text, textRect.center)
-    #     for i in range(len(self.col_clue)):
-    #         text = font.render(str(self.col_clue[i]), True,WHITE)
-    #         pos = GetWorldPosition(-1,int(i))
-    #         textRect = pygame.Rect(pos[0],pos[1],WIDTH,HEIGHT)
-    #         self.DISPLAYSURF.blit(text, textRect.center)
-    #     pygame.display.update()
     def updateCellValue(self, row: int, col: int, value: int):
         self.game.grid[row][col].value = CellValue.int2CellValue(value)
         self.DISPLAYSURF.blit(self.tent_img, self.game.grid[row][col].position)
         pygame.display.update()
         return
-    def writeText(self,value: int,row,col):
+    def writeText(self,grid: Grid,value: int,row,col):
         if(value not in [0,1,2,3,4]):
             return
         text = self.font.render(str(value), True,WHITE)
-        renderposition = (self.game.grid[row][col].position[0]+WIDTH/2,self.game.grid[row][col].position[1]+HEIGHT/2)
+        renderposition = (grid.grid[row][col].position[0]+WIDTH/2,grid.grid[row][col].position[1]+HEIGHT/2)
         text_rect = text.get_rect(center=renderposition)
         self.DISPLAYSURF.blit(text, text_rect)
-    def initGrid(self):
+    def renderGrid(self,grid:Grid):
         for row in range(rownum):
             for column in range(colnum):
-                color = BLACK
                 pygame.draw.rect(self.DISPLAYSURF,
                             WHITE,
-                            [self.game.grid[row][column].position[0],
-                            self.game.grid[row][column].position[1],
+                            [grid.grid[row][column].position[0],
+                            grid.grid[row][column].position[1],
                             WIDTH,
                             HEIGHT])
-                if self.game.grid[row][column].value == CellValueLight.BLACKCELL: 
-                    self.DISPLAYSURF.blit(self.black_cell,self.game.grid[row][column].position)
-                    self.writeText(self.game.baseGrid[row][column],row,column)
-                if self.game.grid[row][column].value == CellValueLight.ILLUMINATED:
-                    self.DISPLAYSURF.blit(self.yellow_cell,self.game.grid[row][column].position)
-                if self.game.grid[row][column].value == CellValueLight.NOTILLUMINATED:
-                    self.DISPLAYSURF.blit(self.white_cell,self.game.grid[row][column].position)
-                if self.game.grid[row][column].value == CellValueLight.BULB:
-                    self.DISPLAYSURF.blit(self.bulb_img,self.game.grid[row][column].position)
+                if grid.grid[row][column].value == CellValueLight.BLACKCELL: 
+                    self.DISPLAYSURF.blit(self.black_cell,grid.grid[row][column].position)
+                    self.writeText(grid,grid.baseGrid[row][column],row,column)
+                if grid.grid[row][column].value == CellValueLight.ILLUMINATED:
+                    self.DISPLAYSURF.blit(self.yellow_cell,grid.grid[row][column].position)
+                if grid.grid[row][column].value == CellValueLight.NOTILLUMINATED:
+                    self.DISPLAYSURF.blit(self.white_cell,grid.grid[row][column].position)
+                if grid.grid[row][column].value == CellValueLight.BULB:
+                    self.DISPLAYSURF.blit(self.bulb_img,grid.grid[row][column].position)
     def placeBulb(self,r:int,c:int):
         if(self.game.grid[r][c].value == CellValueLight.BLACKCELL or self.game.grid[r][c].value == CellValueLight.BULB):
             print("Can not place bulb")
@@ -154,11 +144,11 @@ class LightUpGame():
                     self.DISPLAYSURF.blit(self.bulb_img,self.game.grid[r][c].position)
                 else:
                     self.DISPLAYSURF.blit(self.red_bulb_img,self.game.grid[r][c].position)
-    def updateGrid(self,grid):
+    def updateGrid(self,srcGrid,desGrid:Grid):
         for r in range(rownum):
             for c in range(colnum):
-                self.game.grid[r][c].value = CellValueLight.int2CellValue(grid[r][c])
-        self.initGrid()
+                desGrid.grid[r][c].value = CellValueLight.int2CellValue(srcGrid[r][c])
+        self.renderGrid(desGrid)
         pygame.display.update()
     def run(self,grid):
         # DISPLAYSURF.blit(BACKGROUND, (0, 0))
@@ -189,7 +179,7 @@ class LightUpGame():
                 #         grid.pop(0)
             time.sleep(0.1)
             if(len(grid) != 0):
-                self.updateGrid(grid[0])
+                self.updateGrid(grid[0],self.game1)
                 # print("NEW")
                 grid.pop(0)
             self.fpsClock.tick(self.FPS)
