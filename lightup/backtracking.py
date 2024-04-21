@@ -33,6 +33,7 @@ def init_matrix(puzzle, size):
 
 
 def backtracking_upgrade(puzzle, matrix, n, counter, ans):
+    stateList1.append(copy.deepcopy(matrix))
     # print(matrix)
     puzzle_keys = list(puzzle.keys())
     puzzle_vals = list(puzzle.values())

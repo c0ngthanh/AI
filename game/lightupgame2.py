@@ -4,15 +4,16 @@ from pygame.locals import *
 from enum import Enum
 from game.helper import *
 from game.cfg import *
+from lightup.hillclimbing import *
 
 
 
 class LightUpGame2():
-    def __init__(self,baseGrid):
+    def __init__(self,baseGrid,puzzle):
         pygame.init()
         self.FPS = 120
         self.fpsClock = pygame.time.Clock()
-
+        self.puzzle = puzzle
         self.DISPLAYSURF = pygame.display.set_mode((WINDOWWIDTH, WINDOWHEIGHT))
         pygame.display.set_caption('Light UP Game')
         # BACKGROUND = pygame.image.load('tent_game/Assets/bg.png')
@@ -119,6 +120,7 @@ class LightUpGame2():
                 break
             self.updateNewBulbGrid(r,i,False)
         pygame.display.update()
+
     def updateNewBulbGrid(self,r:int,c:int, addBulb:bool):
         if(addBulb):
             if(self.game.grid[r][c].value == CellValueLight.NOTILLUMINATED):
@@ -148,9 +150,16 @@ class LightUpGame2():
         for r in range(rownum):
             for c in range(colnum):
                 desGrid.grid[r][c].value = CellValueLight.int2CellValue(srcGrid[r][c])
+        fitness = caculate_fitness(srcGrid,self.puzzle)
+        font = pygame.font.Font('arial.ttf', 20)
+        text = font.render(str(fitness), True,WHITE,BLACK)
+        pos = desGrid.grid[0][0].position
+        textRect = pygame.Rect(pos[0]-WIDTH*2,pos[1]-HEIGHT*2,WIDTH*3,HEIGHT)
+        pygame.draw.rect(self.DISPLAYSURF,BLACK,textRect)
+        self.DISPLAYSURF.blit(text, textRect.center)
         self.renderGrid(desGrid)
         pygame.display.update()
-    def run(self,grid):
+    def run(self,statelist1:list,statelist2:list):
         # DISPLAYSURF.blit(BACKGROUND, (0, 0))
         done = False
         status = None
@@ -159,29 +168,28 @@ class LightUpGame2():
                 if event.type == pygame.QUIT:  # If user clicked close
                     done = True  # Flag that we are done so we exit this loop
                         # Set the screen background
-                    # if event.type == pygame.MOUSEBUTTONDOWN:
-                    #     pos = pygame.mouse.get_pos()
-                    #     col = pos[0] 
-                    #     row=  pos[1] 
-                    #     print(row)
-                    #     print(col)
-                    #     if grid[row][col] == 0:
-                    #         if XO == 'x':
-                    #             grid[row][col] = XO
-                    #             XO = 'o'
-                    #         else:
-                    #             grid[row][col] = XO
-                    #             XO = 'x'
                 # if event.type == pygame.MOUSEBUTTONDOWN:
-                #     if(len(grid) != 0):
-                #         self.updateGrid(grid[0])
-                #         print("NEW")
-                #         grid.pop(0)
+                #     if(len(statelist1) != 0):
+                #         self.updateGrid(statelist1[0], self.game)
+                #         statelist1.pop(0)
+                #     elif(len(statelist2) != 0):
+                #         self.updateGrid(statelist2[0][0], self.game)
+                #         self.updateGrid(statelist2[0][1][0], self.game1)
+                #         self.updateGrid(statelist2[0][1][1], self.game2)
+                #         statelist2.pop(0)
             time.sleep(0.1)
-            if(len(grid) != 0):
-                self.updateGrid(grid[0],self.game1)
-                # print("NEW")
-                grid.pop(0)
+            if(len(statelist1) != 0):
+                self.updateGrid(statelist1[0], self.game)
+                statelist1.pop(0)
+            elif(len(statelist2) != 0):
+                self.updateGrid(statelist2[0][0], self.game)
+                self.updateGrid(statelist2[0][1][0], self.game1)
+                self.updateGrid(statelist2[0][1][1], self.game2)
+                statelist2.pop(0)
+            # if(len(grid) != 0):
+            #     self.updateGrid(grid[0],self.game1)
+            #     # print("NEW")
+            #     grid.pop(0)
             self.fpsClock.tick(self.FPS)
             # pygame.draw.rect(self.DISPLAYSURF,
             #                 RED,

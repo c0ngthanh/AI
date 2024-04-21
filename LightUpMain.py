@@ -32,16 +32,16 @@ puzzle = {
 if __name__ == "__main__":
     utils.resetState()
     matrix = init_matrix(puzzle, 7)
-    
     # hill climbing
-    matrix = solve_puzzle2(matrix, puzzle)
-    game = LightUpGame2(matrix)
+    game = LightUpGame2(matrix,puzzle)
     game.renderGrid(game.game)
     game.renderGrid(game.game1)
     game.renderGrid(game.game2)
     game.renderGrid(game.game3)
+    matrix = solve_puzzle2(matrix, puzzle)
     # print(utils.stateList)
-
+    # print(utils.stateList1)
+    # print(utils.stateList2)
     # print(matrix)
     # stateList.append(matrix)
     # backtracking
@@ -51,4 +51,4 @@ if __name__ == "__main__":
     # print(utils.stateList[0])
     # print(utils.stateList[1])
     # print(matrix)
-    game.run(utils.stateList)
+    game.run(utils.stateList1, utils.stateList2)

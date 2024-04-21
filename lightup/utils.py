@@ -1,10 +1,12 @@
 import numpy as np
 
 stateList = []
-stateListChild = []
+stateList1 = []
+stateList2 = []
 def resetState():
     stateList.clear()
-    stateListChild.clear()
+    stateList1.clear()
+    stateList.clear()
 def is_solution(matrix):
     for x in np.nditer(matrix): 
         if x == -2: 
