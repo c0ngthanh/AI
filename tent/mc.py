@@ -1,5 +1,5 @@
 from tent.utils.constraint import Problem, MinConflictsSolver, ExactSumConstraint, MinSumConstraint
-
+import time
 
 class mc:
     def __init__(self, board, row_clue, col_clue, size):
@@ -8,6 +8,9 @@ class mc:
         self.row_clue = row_clue
         self.col_clue = col_clue
         self.block = [0] * (size * size)
+        self.start_run_time = -1
+        self.end_run_time = -1
+        self.execute_time = -1
 
     def get_idx(self, i, j):
         return i * self.size + j
@@ -23,6 +26,7 @@ class mc:
             print()
 
     def min_conflict(self):
+        self.start_run_time = time.time()
         problem = Problem(MinConflictsSolver(1000))
         problem.addVariables(range(self.size * self.size), [0, 1])
         block = self.block
@@ -95,14 +99,19 @@ class mc:
 
         # sometime the solver cannot find the solution because of the randomness
         for trial in range(100):
-            print('Trial', trial)
+            # print('Trial', trial)
+            start_time = time.time()
             solution = problem.getSolution()
+            end_time = time.time()
             if solution is not None:
+                self.execute_time = round(1000*(end_time - start_time),4)
                 break
+
         return solution
         
-    def print_solve(self):
+    def run(self):
         solution = self.min_conflict()
+        self.end_run_time = time.time()
         # print the solution
         for i in range(self.size):
             for j in range(self.size):
@@ -111,7 +120,7 @@ class mc:
                 else:
                     print('2' if solution[self.get_idx(i, j)] else '0', end=' ')
             print()
-
-    def run(self):
-        self.print_init()
-        self.print_solve()
+        
+    def runtime(self):
+        all_execute_time = round(1000*(self.end_run_time - self.start_run_time),4)
+        return self.execute_time, all_execute_time
