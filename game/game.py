@@ -30,13 +30,15 @@ class Game():
         for i in range(len(self.row_clue)):
             text = font.render(str(self.row_clue[i]), True,WHITE)
             pos = GetWorldPosition(int(i),-1)
-            textRect = pygame.Rect(pos[0],pos[1],WIDTH,HEIGHT)
-            self.DISPLAYSURF.blit(text, textRect.center)
+            renderposition = (pos[0]+WIDTH/2,pos[1]+HEIGHT/2)
+            text_rect = text.get_rect(center=renderposition)
+            self.DISPLAYSURF.blit(text, text_rect)
         for i in range(len(self.col_clue)):
             text = font.render(str(self.col_clue[i]), True,WHITE)
             pos = GetWorldPosition(-1,int(i))
-            textRect = pygame.Rect(pos[0],pos[1],WIDTH,HEIGHT)
-            self.DISPLAYSURF.blit(text, textRect.center)
+            renderposition = (pos[0]+WIDTH/2,pos[1]+HEIGHT/2)
+            text_rect = text.get_rect(center=renderposition)
+            self.DISPLAYSURF.blit(text, text_rect)
         pygame.display.update()
     def updateCellValue(self, row: int, col: int, value: int):
         self.game.grid[row][col].value = CellValue.int2CellValue(value)

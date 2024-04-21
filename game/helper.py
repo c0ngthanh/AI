@@ -56,12 +56,6 @@ class Cell:
         self.row = row
         self.col = col
         self.position = GetWorldPosition(row,col)
-    def __init__(self,value, row: int, col: int,numoflight:int):
-        self.value = value
-        self.row = row
-        self.col = col
-        self.position = GetWorldPosition(row,col)
-        self.numoflight = numoflight
 class Grid:
     def __init__(self, rowNum:int, colNum:int,cell,baseGrid: np.ndarray):
         self.row = rowNum
@@ -79,12 +73,12 @@ class Grid:
         for r in range(self.row):
             self.grid.append([])
             for c in range(self.col):
-                cell = Cell(CellValueLight.int2CellValue(self.baseGrid[r][c]),r,c,0)
+                cell = Cell(CellValueLight.int2CellValue(self.baseGrid[r][c]),r,c)
                 self.grid[r].append(cell)
     def SetUpLightGridCustom(self,offset: tuple):
         for r in range(self.row):
             self.grid.append([])
             for c in range(self.col):
-                cell = Cell(CellValueLight.int2CellValue(self.baseGrid[r][c]),r,c,0)
+                cell = Cell(CellValueLight.int2CellValue(self.baseGrid[r][c]),r,c)
                 cell.position = GetWorldPositionCustom(r,c,offset)
                 self.grid[r].append(cell)

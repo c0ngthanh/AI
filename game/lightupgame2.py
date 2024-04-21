@@ -185,6 +185,7 @@ class LightUpGame2():
                 self.updateGrid(statelist2[0][0], self.game)
                 self.updateGrid(statelist2[0][1][0], self.game1)
                 self.updateGrid(statelist2[0][1][1], self.game2)
+                self.updateGrid(statelist2[0][1][2], self.game3)
                 statelist2.pop(0)
             # if(len(grid) != 0):
             #     self.updateGrid(grid[0],self.game1)
