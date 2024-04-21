@@ -135,7 +135,7 @@ def moving_one_bulb(matrix, puzzle):
 def hill_climbing(matrix, puzzle):
     
     results = [add_one_bulb(matrix, puzzle), reduce_one_bulb(matrix, puzzle), moving_one_bulb(matrix, puzzle)]
-    
+    stateList2.append((matrix,results))
     sorted(results, key = lambda x: caculate_fitness(x, puzzle), reverse=True)
 
     if caculate_fitness(results[0], puzzle) <= caculate_fitness(matrix, puzzle):
