@@ -1,6 +1,7 @@
 import numpy as np
 import copy
 import random
+import math
 
 from lightup.utils import *
 from lightup.backtracking import backtracking_upgrade
@@ -108,18 +109,62 @@ def reduce_one_bulb(matrix, puzzle):
     
     return neighbours[0]
 
+def moving_one_bulb(matrix, puzzle):
+    neighbours = []
+    for _ in range(10):
+        copy_matrix = copy.deepcopy(matrix)
+        posible_pos = find_all_possible_pos(copy_matrix)
+        bulbs_pos = find_all_bulb(copy_matrix)
+        if(bulbs_pos == [] or posible_pos == []):
+            continue
+        chosen_bulb = random.choice(bulbs_pos)
+        chosen_pos = random.choice(posible_pos)
+
+        remove_bulb(copy_matrix ,chosen_bulb,puzzle)
+        place_bulb(copy_matrix ,chosen_pos, puzzle)
+
+        neighbours.append(copy_matrix)
+    if neighbours == []:
+        return matrix
+
+    sorted(neighbours, key = lambda x: caculate_fitness(x, puzzle), reverse=True)
+    return neighbours[0]
+    
+
+
 def hill_climbing(matrix, puzzle):
-    results = [add_one_bulb(matrix, puzzle), reduce_one_bulb(matrix, puzzle)]
-    stateList2.append((matrix, results))
+    
+    results = [add_one_bulb(matrix, puzzle), reduce_one_bulb(matrix, puzzle), moving_one_bulb(matrix, puzzle)]
     
     sorted(results, key = lambda x: caculate_fitness(x, puzzle), reverse=True)
 
-    if caculate_fitness(results[0], puzzle) < caculate_fitness(matrix, puzzle):
+    if caculate_fitness(results[0], puzzle) <= caculate_fitness(matrix, puzzle):
         results[0] = matrix
 
     return results[0]
 
-def find_local_optimal(matrix, puzzle):
+def simulated_anealing(matrix, puzzle):
+    anealing_temp = 0.5
+    results = [add_one_bulb(matrix, puzzle), reduce_one_bulb(matrix, puzzle), moving_one_bulb(matrix, puzzle)]
+
+    sorted(results, key = lambda x: caculate_fitness(x, puzzle), reverse=True)
+
+    if caculate_fitness(results[0], puzzle) <= caculate_fitness(matrix, puzzle):
+        results[0] = anealing(matrix, results[0], puzzle, anealing_temp)
+
+    return results[0]
+    
+def anealing(matrix1, matrix2, puzzle, temp):
+    p = random.uniform(0,1)
+    matrix1_fitness = caculate_fitness(matrix1, puzzle)
+    matrix2_fitness = caculate_fitness(matrix2, puzzle)
+    d = -abs(matrix1_fitness - matrix2_fitness) / temp
+    anealing =  math.exp(d)
+    if p > anealing:
+        return matrix2
+    return matrix1
+
+def find_local_optimal(matrix, puzzle, with_anealing):
     copy_matrix = copy.deepcopy(matrix)
 
     terminate = False
@@ -131,14 +176,15 @@ def find_local_optimal(matrix, puzzle):
     while not terminate:
         number_eval+=30
 
-        copy_matrix = hill_climbing(copy_matrix, puzzle)
+        copy_matrix = hill_climbing(copy_matrix, puzzle) if not with_anealing else simulated_anealing(matrix, puzzle)
         new_fitness = caculate_fitness(copy_matrix, puzzle)
 
         if number_eval > 10000:
             terminate = True
 
         if caculate_fitness(copy_matrix, puzzle) == 100:
-
+            print('foudn solution')
+            print(copy_matrix)
             terminate = True
 
         if local_optimal_fitness < new_fitness :
@@ -150,19 +196,46 @@ def find_local_optimal(matrix, puzzle):
 
     return local_optimal
 
-def solve_puzzle2(matrix, puzzle):
+def solve_puzzle2(matrix, puzzle, with_anealing = False):
     n = len(matrix)
     ans = []
     backtracking_upgrade(puzzle, matrix, n, 0, ans)
-    ans = np.unique(ans,axis=0) #REALLY IMPORTANT!!!
+    ans = np.unique(ans, axis=0) #REALLY IMPORTANT!!!
+    sorted(ans, key = lambda x: caculate_fitness(x, puzzle), reverse=True)
+
+    # print(ans)
     solutions = []
     for i in ans:
-        a = find_local_optimal(i, puzzle)
+        a = find_local_optimal(i, puzzle, with_anealing)
         # print(a)
         solutions.append(a)
         # print('----------')
         # print(solutions)
 
+    # print(solutions)
+    # max_score = caculate_fitness(solutions[0], puzzle)
+    # ret = solutions[0]
+    # for i in solutions:
+    #     new_score = caculate_fitness(i, puzzle)
+    #     if new_score > max_score:
+    #         ret = i
+    #         max_score = new_score
+    sorted(solutions, key = lambda x: caculate_fitness(x, puzzle), reverse=True)
     
-    sorted(solutions, key = lambda x: caculate_fitness(x, puzzle), reverse=False)
-    return solutions[-1]
+    return solutions[0]
+
+def another_solution(matrix, puzzle, with_anealing = False):
+    runs = 30
+    n = len(matrix)
+    ans = []
+    backtracking_upgrade(puzzle, matrix, n, 0, ans)
+    ans = np.unique(ans, axis=0) 
+    sorted(ans, key = lambda x: caculate_fitness(x, puzzle), reverse=True)
+
+    solutions = []
+    for _ in range(runs):
+        a = find_local_optimal(ans[0], puzzle, with_anealing)
+        solutions.append(a)
+    sorted(solutions, key = lambda x: caculate_fitness(x, puzzle), reverse=True)
+    
+    return solutions[0]
