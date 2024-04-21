@@ -45,7 +45,7 @@
 """
 
 from __future__ import absolute_import, division, print_function
-
+# from TentMain import statelist as TentstateList
 import random
 import copy
 
@@ -691,7 +691,7 @@ class MinConflictsSolver(Solver):
         @type  steps: int
         """
         self._steps = steps
-
+        self.stateList = []
     def getSolution(self, domains, constraints, vconstraints):
         assignments = {}
         # Initial assignment
@@ -699,13 +699,16 @@ class MinConflictsSolver(Solver):
             assignments[variable] = random.choice(domains[variable])
         for _ in range(self._steps):
             # print(assignments)
-            # N = int(len(assignments)**0.5)
-            # array = np.zeros((N, N), dtype=int)
-            # for i in range(N):
-            #     for j in range(N):
-            #         array[i, j] = assignments[i * N + j]
-
-            # print(array)            
+            N = int(len(assignments)**0.5)
+            array = np.zeros((N, N), dtype=int)
+            for i in range(N):
+                for j in range(N):
+                    array[i, j] = assignments[i * N + j]
+                    if(array[i, j] == 1):
+                        array[i,j]=2
+                    
+            # print(array)
+            self.stateList.append(array)          
             conflicted = False
             lst = list(domains.keys())
             random.shuffle(lst)

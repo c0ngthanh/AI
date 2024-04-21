@@ -11,6 +11,7 @@ class mc:
         self.start_run_time = -1
         self.end_run_time = -1
         self.execute_time = -1
+        self.stateList = []
 
     def get_idx(self, i, j):
         return i * self.size + j
@@ -27,7 +28,9 @@ class mc:
 
     def min_conflict(self):
         self.start_run_time = time.time()
-        problem = Problem(MinConflictsSolver(1000))
+        a = MinConflictsSolver(1000)
+        problem = Problem(a)
+
         problem.addVariables(range(self.size * self.size), [0, 1])
         block = self.block
         board = self.state
@@ -102,6 +105,7 @@ class mc:
             # print('Trial', trial)
             start_time = time.time()
             solution = problem.getSolution()
+            self.stateList = a.stateList
             end_time = time.time()
             if solution is not None:
                 self.execute_time = round(1000*(end_time - start_time),4)
