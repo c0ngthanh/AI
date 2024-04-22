@@ -16,11 +16,17 @@ def puzzle_to_np_array(board, row, col):
     return puzzle, row_clue, col_clue, size
 def SetStateList(value):
     statelist = value
+
 # Run time by min conflict
 run_time = []
 all_run_time = []
 # Run time by backtracking
 btk_runtime = []
+# Memory Min Conflict 
+ram_usage_mc = []
+# Memory Backtracking
+ram_usage_btk = []
+
 for i in range(len(puzzle)):
     x, y ,z, n = puzzle_to_np_array(puzzle[i], row_clue[i], col_clue[i])
     statelist = []
@@ -28,44 +34,36 @@ for i in range(len(puzzle)):
     # # Min-Conflict
     print("Min-Conflict:")
     a = mc(x, y, z, n)
+    tracemalloc.start()
     a.run()
-    mem1 = sys.getsizeof(a.run())
+    # Memory
+    ram_usage_mc.append(round(tracemalloc.get_traced_memory()[1], 7))
+    tracemalloc.stop()
+    # Time
     run_time1, run_time2 = a.runtime()
-    print("Run time of best trial by min conflict:", run_time1, "ms")
-    print("Run time of all trial by min conflict:", run_time2, "ms")
-
-    # # Memory
-    # print("Memory usage Min Conflict:", mem1, "bytes")
+    run_time.append(run_time1)
+    all_run_time.append(run_time2)
 
     # Backtracking
     # print("Backtracking:")
     game = Game(x,y,z,n,n)
-    # start_time = time.time()
-    # # mem2 = sys.getsizeof(bfs(x, y, z, n, stack,statelist))
-    # bfs(x, y, z, n, stack,statelist)
-    # end_time = time.time()
-    # print(x)
-    # run_time3 = round(1000*(end_time - start_time),4)
-    # print("Run time by backtracking:", run_time3, "ms")
+    tracemalloc.start()
+    start_time = time.time()
+    bfs(x, y, z, n, stack)
+    end_time = time.time()
+    # Time
+    run_time3 = round(1000*(end_time - start_time),4)
+    btk_runtime.append(run_time3)
+    # Memory
+    ram_usage_btk.append(round(tracemalloc.get_traced_memory()[1], 7))
+    tracemalloc.stop()
+    print(x)
     print(a.stateList)
     game.run(a.stateList)
-    # Memory
-    # print("Memory usage Backtracking:", mem2, "bytes")
-#     run_time.append(run_time1)
-#     all_run_time.append(run_time2)
-#     btk_runtime.append(run_time3)
 
+
+#Testcase
+x = [1,2,3,4,5,6,7,8,9,10]
 # #Draw plot
-# x = [1,2,3,4,5,6,7,8,9,10]
-
-# # Draw 3 line
-# plt.plot(x, run_time, label='Min Conflict', color='b', linestyle='-', linewidth=2) 
-# plt.plot(x, all_run_time, label='Total time Min Conflict', color='g', linestyle='--', linewidth=2) 
-# plt.plot(x, btk_runtime, label='Backtracking', color='r', linestyle='-.', linewidth=2) 
-
-# # Add info
-# plt.title("Tent puzzle")
-# plt.xlabel("Testcase")
-# plt.ylabel("Time (ms)")
-# plt.legend()
-# plt.show()
+Time_plot(x, run_time, all_run_time, btk_runtime)
+Mem_plot(x, ram_usage_mc, ram_usage_btk)
